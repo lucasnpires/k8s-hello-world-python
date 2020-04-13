@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-1-4-0
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind: Mapping
+      name: hello-world-1-4-0-mapping
+      prefix: /hello/
+      service: hello-world-1-4-0
+    forge.repo: https://github.com/lucasnpires/k8s-hello-world-python.git
+    forge.descriptor: service.yaml
+    forge.version: 1530215ae5f0cf8540906d4f1bcc054ea39eccdb.sha
+  labels: {forge.service: hello-world, forge.profile: 1-4-0}
+spec:
+  selector:
+    app: hello-world-1-4-0
+  ports:
+  - port: 80
+    targetPort: http-api
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-world-1-4-0
+    forge.service: hello-world
+    forge.profile: 1-4-0
+  name: hello-world-1-4-0
+  annotations: {forge.repo: 'https://github.com/lucasnpires/k8s-hello-world-python.git',
+    forge.descriptor: service.yaml, forge.version: 1530215ae5f0cf8540906d4f1bcc054ea39eccdb.sha}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-1-4-0
+  template:
+    metadata:
+      labels:
+        app: hello-world-1-4-0
+    spec:
+      containers:
+      - name: hello-world-1-4-0
+        image: bluecr.azurecr.io/blue/hello-world:1530215ae5f0cf8540906d4f1bcc054ea39eccdb.sha
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http-api
+          protocol: TCP
+        resources:
+          requests:
+            memory: 0.1G
+            cpu: 0.1
+          limits:
+            memory: 0.5G
+            cpu: 0.5
+      imagePullSecrets:
+      - name: bluecr

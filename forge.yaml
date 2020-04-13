@@ -1,0 +1,10 @@
+# Global forge configuration
+# DO NOT CHECK INTO GITHUB, THIS FILE CONTAINS SECRETS
+registry:
+  type: docker
+  url: bluecr.azurecr.io
+  user: bluecr
+  password: 'YTVHelRFTk9WRE1VQS9CN0V6YnhPclJpSTBQQS9Ka2o=
+
+    '
+  namespace: blue
